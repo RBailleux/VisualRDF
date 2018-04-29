@@ -24,7 +24,25 @@
       $date = recursiveFind($rdf, 'http://purl.org/dc/terms/date');
       $date = isset($date[0]['value']) ? $date[0]['value'] : '';
 
+      $creatorsFullname = array();
+      $creators = recursiveFind($rdf, 'http://purl.org/dc/terms/creator');
+      foreach($creators as $creator){
+        if(isset($creator['value'])){
+          $creatorName = recursiveFind($rdf, $creator['value']);
+          $creatorsFullname[] = recursiveFind($creatorName, 'http://xmlns.com/foaf/0.1/name');
+        }
+      }
+
       echo '<a href="'.$uri.'">'.$title.'</a> - '.$date;
+
+      echo '<h2>Authors :</h2>';
+      echo '<ul>';
+      foreach ($creatorsFullname as $creatorFullname) {
+        if(isset($creatorFullname[0]['value'])){
+          echo '<li>'.$creatorFullname[0]['value'].'</li>';
+        }
+      }
+      echo '</ul>';
     }
 
     function recursiveFind(array $haystack, $needle)
